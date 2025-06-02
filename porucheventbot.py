@@ -30,18 +30,18 @@ async def process_callback_button(callback_query: types.CallbackQuery):
                 await bot.send_message(callback_query.from_user.id, 'Ви успішно зареєструвались!')
 @dp.message_handler(commands=['admin'])
 async def admin(message: types.Message):
-        if message.from_user.id == 1110618366:
+        if message.from_user.id == ADMIN_ID:
             await bot.send_message(message.from_user.id, 'Меню адміна', reply_markup=admin_keyboard)
 @dp.message_handler()
 async def echo(message: types.Message):
-    if message.text == 'Вибор' and message.from_user.id == 1110618366:
+    if message.text == 'Вибор' and message.from_user.id == ADMIN_ID:
         with connection.cursor() as cursor:
             cursor.execute("""SELECT * FROM users WHERE win IS NULL ORDER BY RANDOM() LIMIT 1;""")
             for ret in cursor.fetchall():
                 await message.reply(f"id: {ret[0]} nickname: {ret[2]} name: {ret[1]}")
                 await bot.send_message(chat_id=ret[0], text="Ви вийграли! Невздовзі з вами з'вяжуться")
                 cursor.execute("UPDATE users SET win = 1 WHERE id = %s", (ret[0],))
-    elif message.text == 'Сброс' and message.from_user.id == 1110618366:
+    elif message.text == 'Сброс' and message.from_user.id == ADMIN_ID:
         with connection.cursor() as cursor:
             cursor.execute("""SELECT * FROM users """)
             for ret in cursor.fetchall():
